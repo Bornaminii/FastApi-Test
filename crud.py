@@ -76,3 +76,23 @@ def delete_book(book_id: int):
             books.remove(book)
             return {"message": "Book deleted successfully"}
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
+
+
+
+class PatchedBook(BaseModel):
+    title: Optional[str] = None
+    author: Optional[str] = None
+    description: Optional[str] = None
+
+@app.patch("/books/{book_id}")
+def patch_book(book_id: int, patched_book: PatchedBook):
+    for book in books:
+        if book['id'] == book_id:
+            if patched_book.title:
+                book['title'] = patched_book.title
+            if patched_book.author:
+                book['author'] = patched_book.author
+            if patched_book.description:
+                book['description'] = patched_book.description
+            return book
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Book not found")
