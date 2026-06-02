@@ -58,4 +58,11 @@ def login_user(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail="User does not exist")
+                            detail="Invalid Username!")
+
+    if not utils.verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                            detial="Invalid Password!")
+
+
+    token_data = {}
